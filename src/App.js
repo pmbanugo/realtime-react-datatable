@@ -63,7 +63,7 @@ class App extends Component {
   };
 
   handleSubmit = event => {
-    this.listPrimitive.push({
+    this.listPrimitive.add({
       firstName: this.state.firstName,
       lastName: this.state.lastName
     });
