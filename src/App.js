@@ -18,41 +18,51 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let hamoni = new Hamoni("ACCOUNT_ID", "APP_ID");
+    const accountId = "YOUR_ACCOUNT_ID";
+    const appId = "YOUR_APP_ID";
+    let hamoni;
 
-    hamoni
-      .connect()
-      .then(() => {
-        hamoni
-          .get("datagrid")
-          .then(listPrimitive => {
-            this.listPrimitive = listPrimitive;
+    fetch("https://api.sync.hamoni.tech/v1/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify({ accountId, appId })
+    }).then(token => {
+      hamoni
+        .connect()
+        .then(() => {
+          hamoni
+            .get("datagrid")
+            .then(listPrimitive => {
+              this.listPrimitive = listPrimitive;
 
-            this.setState({
-              data: [...listPrimitive.getAll()]
-            });
+              this.setState({
+                data: [...listPrimitive.getAll()]
+              });
 
-            listPrimitive.onItemAdded(item => {
-              this.setState({ data: [...this.state.data, item.value] });
-            });
+              listPrimitive.onItemAdded(item => {
+                this.setState({ data: [...this.state.data, item.value] });
+              });
 
-            listPrimitive.onItemUpdated(item => {
-              let data = [
-                ...this.state.data.slice(0, item.index),
-                item.value,
-                ...this.state.data.slice(item.index + 1)
-              ];
+              listPrimitive.onItemUpdated(item => {
+                let data = [
+                  ...this.state.data.slice(0, item.index),
+                  item.value,
+                  ...this.state.data.slice(item.index + 1)
+                ];
 
-              this.setState({ data: data });
-            });
+                this.setState({ data: data });
+              });
 
-            listPrimitive.onSync(data => {
-              this.setState({ data: data });
-            });
-          })
-          .catch(error => console.log(error));
-      })
-      .catch(error => console.log(error));
+              listPrimitive.onSync(data => {
+                this.setState({ data: data });
+              });
+            })
+            .catch(error => console.log(error));
+        })
+        .catch(error => console.log(error));
+    });
   }
 
   handleChange = event => {
