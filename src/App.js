@@ -29,6 +29,8 @@ class App extends Component {
       },
       body: JSON.stringify({ accountId, appId })
     }).then(token => {
+      hamoni = new Hamoni(token);
+
       hamoni
         .connect()
         .then(() => {
