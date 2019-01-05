@@ -17,18 +17,19 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const accountId = "YOUR_ACCOUNT_ID";
     const appId = "YOUR_APP_ID";
     let hamoni;
 
-    fetch("https://api.sync.hamoni.tech/v1/token", {
+    const response = await fetch("https://api.sync.hamoni.tech/v1/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       },
       body: JSON.stringify({ accountId, appId })
-    }).then(token => {
+    });
+    const token = await response.json();
       hamoni = new Hamoni(token);
 
       hamoni
@@ -64,7 +65,7 @@ class App extends Component {
             .catch(error => console.log(error));
         })
         .catch(error => console.log(error));
-    });
+    
   }
 
   handleChange = event => {
